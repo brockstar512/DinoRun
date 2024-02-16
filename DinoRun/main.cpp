@@ -2,120 +2,96 @@
 #include <SDL2_ttf/SDL_ttf.h>
 #include <SDL2_image/SDL_image.h>
 #include <iostream>
+
+
 const int WIDTH = 640, HEIGHT = 360;
+SDL_Window* window = NULL;
+SDL_Renderer* renderer = NULL;
+const char* SPRITES_FOLDER="/Users/marshallbrock/Documents/C++/DinoRun/DinoRun/sprites/";
+
+//dino variables
+int dinoX = 100;
+int dinoY = HEIGHT - 48 - 40;
+SDL_Texture* dinoTexture = NULL;
+
+bool LoadSprites()
+{
+    std::string dinoPathImage = SPRITES_FOLDER + std::string("dino_.png");
+    SDL_Surface *dinoSurface = IMG_Load(dinoPathImage.c_str());
+    if(!dinoSurface)
+    {
+        std::cout<<"Problem loading Dino Image" << IMG_GetError()<<std::endl;
+        return false;
+    }
+    dinoTexture = SDL_CreateTextureFromSurface(renderer,dinoSurface);
+    SDL_FreeSurface(dinoSurface);
+    return true;
+}
+
+bool InitializeSDL()
+{
+    SDL_Init(SDL_INIT_VIDEO);
+    window = SDL_CreateWindow("Dino Run", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,WIDTH,HEIGHT,SDL_WINDOW_SHOWN);
+    
+    
+    if(!window){
+        std::cout<<"SDL_CREATE window error"<<SDL_GetError()<<std::endl;
+        SDL_Quit();
+        return false;
+    }
+    
+    renderer = SDL_CreateRenderer(window, -1,SDL_RENDERER_ACCELERATED);
+    
+    if(!renderer){
+        std::cout<<"SDL_CREATE renderer error"<<SDL_GetError()<<std::endl;
+        SDL_Quit();
+        return false;
+    }
+    //5 seconds
+    //SDL_Delay(10000);
+    return true;
+}
+
+bool quit = false;
+SDL_Event event;
 
 int main(int argc, char* argv[]) {
     
-//    // Initialize SDL
-//    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-//        SDL_Log("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
-//        return 1;
-//    }
-//
-//    // Create a window
-//    SDL_Window* window = SDL_CreateWindow("SDL2 Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN);
-//    if (window == NULL) {
-//        SDL_Log("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-//        return 1;
-//    }
-//
-//    // Create a renderer
-//    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-//    if (renderer == NULL) {
-//        SDL_Log("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
-//        return 1;
-//    }
-//
-//    //initialize image
-//    if(!(IMG_Init(IMG_INIT_PNG)&& IMG_INIT_PNG))
-//    {
-//        std::cout<<"Could not initialize sdl_image:"<<IMG_GetError()<<std::endl;
-//        return 1;
-//    }
+    if(!InitializeSDL())
+    {
+        return 1;
+    }
+    if(!LoadSprites())
+    {
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+    //game loop
+    while(!quit)
+    {
+        //event loop
+        while(SDL_PollEvent(&event)!=0)
+        {
+         if(event.type == SDL_QUIT)
+         {
+             quit = true;
+         }
+        }
+        
+        //color background
+        SDL_SetRenderDrawColor(renderer,255,255,255,255);
+        //clear frame to update ever loop
+        SDL_RenderClear(renderer);
+        //where i want image to show on x and y image
+        SDL_Rect dinoRect = {dinoX,dinoY,44,48};
+        //copy image to paste on window...this just renders one item
+        SDL_RenderCopy(renderer,dinoTexture,NULL,&dinoRect);
+        
+        //present everything that the renderer has
+        SDL_RenderPresent(renderer);
+    }
 
-    
-//check sdl
-//    // Main loop
-//    bool quit = false;
-//    SDL_Event e;
-//    while (!quit) {
-//        while (SDL_PollEvent(&e) != 0) {
-//            if (e.type == SDL_QUIT) {
-//                quit = true;
-//            }
-//        }
-//
-//        // Clear the screen
-//        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-//        SDL_RenderClear(renderer);
-//
-//        // Update your rendering here
-//
-//        // Present the renderer
-//        SDL_RenderPresent(renderer);
-//    }
-//
-//    // Cleanup and quit
-//    SDL_DestroyRenderer(renderer);
-//    SDL_DestroyWindow(window);
-//    SDL_Quit();
-//
-//    return 0;
-    
-    SDL_Surface *imageSurface = NULL;
-       SDL_Surface *windowSurface = NULL;
-       
-       SDL_Init( SDL_INIT_EVERYTHING );
-       
-       SDL_Window *window = SDL_CreateWindow( "Hello SDL World", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_ALLOW_HIGHDPI );
-       windowSurface = SDL_GetWindowSurface( window );
-       
-       // Check that the window was successfully created
-       if ( NULL == window )
-       {
-           // In the case that the window could not be made...
-           std::cout << "Could not create window: " << SDL_GetError( ) << std::endl;
-           return 1;
-       }
-       
-       if( !( IMG_Init( IMG_INIT_PNG ) & IMG_INIT_PNG ) )
-       {
-           std::cout << "Could not create window: " << IMG_GetError( ) << std::endl;
-           return 1;
-       }
-       
-       SDL_Event windowEvent;
-       
-       imageSurface = IMG_Load("/Users/marshallbrock/Documents/C++/DinoRun/DinoRun/logo.png");
-       
-       if ( NULL == imageSurface )
-       {
-           std::cout << "SDL could not load image! SDL Error: " << SDL_GetError( ) << std::endl;
-       }
-       
-       while ( true )
-       {
-           if ( SDL_PollEvent( &windowEvent ) )
-           {
-               if ( SDL_QUIT == windowEvent.type )
-               {
-                   break;
-               }
-           }
-           
-           SDL_BlitSurface( imageSurface, NULL, windowSurface, NULL );
-           
-           SDL_UpdateWindowSurface( window );
-       }
-       
-       SDL_FreeSurface( imageSurface );
-       SDL_FreeSurface( windowSurface );
-       
-       imageSurface = NULL;
-       windowSurface = NULL;
-       
-       SDL_DestroyWindow( window );
-       SDL_Quit( );
-       
-       return EXIT_SUCCESS;
+    SDL_Quit();
 }
