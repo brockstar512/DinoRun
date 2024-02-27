@@ -12,7 +12,19 @@ const char* SPRITES_FOLDER="/Users/marshallbrock/Documents/C++/DinoRun/DinoRun/s
 //dino variables
 int dinoX = 100;
 int dinoY = HEIGHT - 48 - 40;
+double dinoXVelocity = 0.0;
+double dinoYVelocity = 0.0;
 SDL_Texture* dinoTexture = NULL;
+SDL_Texture* groundTexture1=NULL;
+SDL_Texture* groundTexture2=NULL;
+int groundImageWidth = 0;
+int groundSpeed = 2;
+int ground1X = 0;
+int ground2X = 0;
+
+const double GRAVITY = 0.1;
+const double JUMP_FORCE = 6.0;
+bool isJumping = false;
 
 bool LoadSprites()
 {
@@ -55,6 +67,27 @@ bool InitializeSDL()
 bool quit = false;
 SDL_Event event;
 
+void HandleJump()
+{
+    if(!isJumping)
+    {
+        dinoYVelocity = -JUMP_FORCE;
+        isJumping = true;
+    }
+}
+void UpdateDino()
+{
+    dinoY += static_cast<int>(dinoYVelocity);
+    dinoYVelocity+=GRAVITY;
+    //remember screen coordinates start at top left where it is 0,0 so the lower in the screen the greater the y value
+    if(dinoY>=HEIGHT-48-40)
+    {
+        dinoY = HEIGHT-48-40;
+        dinoYVelocity = 0.0;
+        isJumping=false;
+    }
+}
+
 int main(int argc, char* argv[]) {
     
     if(!InitializeSDL())
@@ -78,7 +111,17 @@ int main(int argc, char* argv[]) {
          {
              quit = true;
          }
+            //determine if any key is pressed
+            else if (event.type == SDL_KEYDOWN)
+            {
+                //jump jump key is presed
+             if(event.key.keysym.sym ==SDLK_UP || event.key.keysym.sym== SDLK_SPACE)
+             {
+                 HandleJump();
+             }
+            }
         }
+        UpdateDino();
         
         //color background
         SDL_SetRenderDrawColor(renderer,255,255,255,255);
@@ -91,6 +134,8 @@ int main(int argc, char* argv[]) {
         
         //present everything that the renderer has
         SDL_RenderPresent(renderer);
+        
+        SDL_Delay(1);
     }
 
     SDL_Quit();
