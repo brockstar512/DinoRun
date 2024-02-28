@@ -21,11 +21,11 @@ bool quit = false;
 SDL_Event event;
 
 Dino* dino;
-
+const char* SPRITES_FOLDER="/Users/marshallbrock/Documents/C++/DinoRun/DinoRun/sprites/";
 bool LoadSprites()
 {
-    std::string dinoPathImage = Utils::SPRITES_FOLDER + std::string("dino_.png");
-    std::string groundPathImage = Utils::SPRITES_FOLDER + std::string("ground.png");
+    std::string dinoPathImage = SPRITES_FOLDER + std::string("dino_.png");
+    std::string groundPathImage = SPRITES_FOLDER + std::string("ground.png");
     SDL_Surface *dinoSurface = IMG_Load(dinoPathImage.c_str());
     if(!dinoSurface)
     {
@@ -127,6 +127,7 @@ int main(int argc, char* argv[]) {
         SDL_Quit();
         return 1;
     }
+    dino = new Dino;
     //game loop
     while(!quit)
     {
@@ -152,7 +153,7 @@ int main(int argc, char* argv[]) {
         
         SDL_Delay(1);
     }
-
+    delete dino;
     SDL_Quit();
 }
 
