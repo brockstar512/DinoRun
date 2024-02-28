@@ -29,6 +29,7 @@ bool isJumping = false;
 bool LoadSprites()
 {
     std::string dinoPathImage = SPRITES_FOLDER + std::string("dino_.png");
+    std::string groundPathImage = SPRITES_FOLDER + std::string("ground.png");
     SDL_Surface *dinoSurface = IMG_Load(dinoPathImage.c_str());
     if(!dinoSurface)
     {
@@ -37,7 +38,34 @@ bool LoadSprites()
     }
     dinoTexture = SDL_CreateTextureFromSurface(renderer,dinoSurface);
     SDL_FreeSurface(dinoSurface);
+    
+    SDL_Surface *groundSurface = IMG_Load(groundPathImage.c_str());
+    if(!dinoSurface)
+    {
+        std::cout<<"Problem loading ground Image" << IMG_GetError()<<std::endl;
+        return false;
+    }
+//    dinoTexture = SDL_CreateTextureFromSurface(renderer,groundSurface);
+    groundTexture1 = SDL_CreateTextureFromSurface(renderer,groundSurface);
+    groundTexture2 = SDL_CreateTextureFromSurface(renderer,groundSurface);
+    
+    groundImageWidth=groundSurface->w;
+    SDL_FreeSurface(groundSurface);
     return true;
+}
+//update ground position for continuous scrolling
+void UpdateGround()
+{
+    ground1X -= groundSpeed;
+    ground2X -= groundSpeed;
+    //if ground 1 is all the way hidden at that point and we know this by adding the width to it and it is still less than 0
+    if(ground1X + groundImageWidth < 0)
+    {
+        ground1X = ground2X + groundImageWidth;
+    }
+    else if(ground2X + groundImageWidth){
+        ground2X = ground1X + groundImageWidth;
+    }
 }
 
 bool InitializeSDL()
@@ -122,13 +150,20 @@ int main(int argc, char* argv[]) {
             }
         }
         UpdateDino();
-        
+        UpdateGround();
         //color background
         SDL_SetRenderDrawColor(renderer,255,255,255,255);
         //clear frame to update ever loop
         SDL_RenderClear(renderer);
         //where i want image to show on x and y image
         SDL_Rect dinoRect = {dinoX,dinoY,44,48};
+        SDL_Rect groundRect1 = {ground1X,HEIGHT-40-48, groundImageWidth,40};
+        SDL_RenderCopy(renderer,groundTexture1,NULL,&groundRect1);
+        SDL_Rect groundRect2 = {ground2X,HEIGHT-40-48, groundImageWidth,40};
+        SDL_RenderCopy(renderer,groundTexture2,NULL,&groundRect2);
+
+
+        
         //copy image to paste on window...this just renders one item
         SDL_RenderCopy(renderer,dinoTexture,NULL,&dinoRect);
         
