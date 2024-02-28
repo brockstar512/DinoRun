@@ -10,15 +10,14 @@
 
 #include <stdio.h>
 #include "Utils.hpp"
-#include <SDL2/SDL.h>
 class Dino{
     
 public:
     void Update();
     void HandleJump();
-    SDL_Rect GetRect() const {return {dinoX,dinoY,44,48};}
-    
-    
+    int GetX() const {return dinoX;}
+    int GetY() const {return dinoY;}
+
     
 private:
     int dinoX = 100;

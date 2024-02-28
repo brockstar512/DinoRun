@@ -99,7 +99,7 @@ void Draw()
     //clear frame to update ever loop
     SDL_RenderClear(renderer);
     //where i want image to show on x and y image
-    SDL_Rect dinoRect = dino->GetRect();
+    SDL_Rect dinoRect = {dino->GetX(),dino->GetY(),44,48};
     SDL_Rect groundRect1 = {ground1X,Utils::HEIGHT-40-48, groundImageWidth,40};
     SDL_RenderCopy(renderer,groundTexture1,NULL,&groundRect1);
     SDL_Rect groundRect2 = {ground2X,Utils::HEIGHT-40-48, groundImageWidth,40};
