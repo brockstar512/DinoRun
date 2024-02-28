@@ -2,18 +2,13 @@
 #include <SDL2_ttf/SDL_ttf.h>
 #include <SDL2_image/SDL_image.h>
 #include <iostream>
+#include "Utils.hpp"
+#include "Dino.hpp"
 
 
-const int WIDTH = 640, HEIGHT = 360;
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
-const char* SPRITES_FOLDER="/Users/marshallbrock/Documents/C++/DinoRun/DinoRun/sprites/";
 
-//dino variables
-int dinoX = 100;
-int dinoY = HEIGHT - 48 - 40;
-double dinoXVelocity = 0.0;
-double dinoYVelocity = 0.0;
 SDL_Texture* dinoTexture = NULL;
 SDL_Texture* groundTexture1=NULL;
 SDL_Texture* groundTexture2=NULL;
@@ -22,14 +17,15 @@ int groundSpeed = 2;
 int ground1X = 0;
 int ground2X = 0;
 
-const double GRAVITY = 0.1;
-const double JUMP_FORCE = 6.0;
-bool isJumping = false;
+bool quit = false;
+SDL_Event event;
+
+Dino* dino;
 
 bool LoadSprites()
 {
-    std::string dinoPathImage = SPRITES_FOLDER + std::string("dino_.png");
-    std::string groundPathImage = SPRITES_FOLDER + std::string("ground.png");
+    std::string dinoPathImage = Utils::SPRITES_FOLDER + std::string("dino_.png");
+    std::string groundPathImage = Utils::SPRITES_FOLDER + std::string("ground.png");
     SDL_Surface *dinoSurface = IMG_Load(dinoPathImage.c_str());
     if(!dinoSurface)
     {
@@ -71,7 +67,7 @@ void UpdateGround()
 bool InitializeSDL()
 {
     SDL_Init(SDL_INIT_VIDEO);
-    window = SDL_CreateWindow("Dino Run", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,WIDTH,HEIGHT,SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Dino Run", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,Utils::WIDTH,Utils::HEIGHT,SDL_WINDOW_SHOWN);
     
     
     if(!window){
@@ -92,28 +88,30 @@ bool InitializeSDL()
     return true;
 }
 
-bool quit = false;
-SDL_Event event;
 
-void HandleJump()
+//this only handles the renderer
+void Draw()
 {
-    if(!isJumping)
-    {
-        dinoYVelocity = -JUMP_FORCE;
-        isJumping = true;
-    }
-}
-void UpdateDino()
-{
-    dinoY += static_cast<int>(dinoYVelocity);
-    dinoYVelocity+=GRAVITY;
-    //remember screen coordinates start at top left where it is 0,0 so the lower in the screen the greater the y value
-    if(dinoY>=HEIGHT-48-40)
-    {
-        dinoY = HEIGHT-48-40;
-        dinoYVelocity = 0.0;
-        isJumping=false;
-    }
+    dino->Update();
+    UpdateGround();
+    //color background
+    SDL_SetRenderDrawColor(renderer,255,255,255,255);
+    //clear frame to update ever loop
+    SDL_RenderClear(renderer);
+    //where i want image to show on x and y image
+    SDL_Rect dinoRect = dino->GetRect();
+    SDL_Rect groundRect1 = {ground1X,Utils::HEIGHT-40-48, groundImageWidth,40};
+    SDL_RenderCopy(renderer,groundTexture1,NULL,&groundRect1);
+    SDL_Rect groundRect2 = {ground2X,Utils::HEIGHT-40-48, groundImageWidth,40};
+    SDL_RenderCopy(renderer,groundTexture2,NULL,&groundRect2);
+
+
+    
+    //copy image to paste on window...this just renders one item
+    SDL_RenderCopy(renderer,dinoTexture,NULL,&dinoRect);
+    
+    //present everything that the renderer has
+    SDL_RenderPresent(renderer);
 }
 
 int main(int argc, char* argv[]) {
@@ -145,33 +143,18 @@ int main(int argc, char* argv[]) {
                 //jump jump key is presed
              if(event.key.keysym.sym ==SDLK_UP || event.key.keysym.sym== SDLK_SPACE)
              {
-                 HandleJump();
+                 dino->HandleJump();
              }
             }
         }
-        UpdateDino();
-        UpdateGround();
-        //color background
-        SDL_SetRenderDrawColor(renderer,255,255,255,255);
-        //clear frame to update ever loop
-        SDL_RenderClear(renderer);
-        //where i want image to show on x and y image
-        SDL_Rect dinoRect = {dinoX,dinoY,44,48};
-        SDL_Rect groundRect1 = {ground1X,HEIGHT-40-48, groundImageWidth,40};
-        SDL_RenderCopy(renderer,groundTexture1,NULL,&groundRect1);
-        SDL_Rect groundRect2 = {ground2X,HEIGHT-40-48, groundImageWidth,40};
-        SDL_RenderCopy(renderer,groundTexture2,NULL,&groundRect2);
-
-
         
-        //copy image to paste on window...this just renders one item
-        SDL_RenderCopy(renderer,dinoTexture,NULL,&dinoRect);
-        
-        //present everything that the renderer has
-        SDL_RenderPresent(renderer);
+        Draw();
         
         SDL_Delay(1);
     }
 
     SDL_Quit();
 }
+
+
+
