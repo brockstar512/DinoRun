@@ -4,23 +4,23 @@
 #include <iostream>
 #include "Utils.hpp"
 #include "Dino.hpp"
-
+#include "Ground.hpp"
 
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
-
 SDL_Texture* dinoTexture = NULL;
 SDL_Texture* groundTexture1=NULL;
 SDL_Texture* groundTexture2=NULL;
-int groundImageWidth = 0;
-int groundSpeed = 2;
-int ground1X = 0;
-int ground2X = 0;
+//int groundImageWidth = 0;
+//int groundSpeed = 2;
+//int ground1X = 0;
+//int ground2X = 0;
 
 bool quit = false;
 SDL_Event event;
 
 Dino* dino;
+Ground* ground;
 const char* SPRITES_FOLDER="/Users/marshallbrock/Documents/C++/DinoRun/DinoRun/sprites/";
 bool LoadSprites()
 {
@@ -45,24 +45,13 @@ bool LoadSprites()
     groundTexture1 = SDL_CreateTextureFromSurface(renderer,groundSurface);
     groundTexture2 = SDL_CreateTextureFromSurface(renderer,groundSurface);
     
-    groundImageWidth=groundSurface->w;
+//    groundImageWidth=groundSurface->w;
+    ground = new Ground;
+    ground->SetWidth(groundSurface->w);
     SDL_FreeSurface(groundSurface);
     return true;
 }
-//update ground position for continuous scrolling
-void UpdateGround()
-{
-    ground1X -= groundSpeed;
-    ground2X -= groundSpeed;
-    //if ground 1 is all the way hidden at that point and we know this by adding the width to it and it is still less than 0
-    if(ground1X + groundImageWidth < 0)
-    {
-        ground1X = ground2X + groundImageWidth;
-    }
-    else if(ground2X + groundImageWidth){
-        ground2X = ground1X + groundImageWidth;
-    }
-}
+
 
 bool InitializeSDL()
 {
@@ -93,16 +82,16 @@ bool InitializeSDL()
 void Draw()
 {
     dino->Update();
-    UpdateGround();
+    ground->Update();
     //color background
     SDL_SetRenderDrawColor(renderer,255,255,255,255);
     //clear frame to update ever loop
     SDL_RenderClear(renderer);
     //where i want image to show on x and y image
     SDL_Rect dinoRect = {dino->GetX(),dino->GetY(),44,48};
-    SDL_Rect groundRect1 = {ground1X,Utils::HEIGHT-40-48, groundImageWidth,40};
+    SDL_Rect groundRect1 = {ground->GetX1(),Utils::HEIGHT-40-48, ground->GetWidth(),40};
     SDL_RenderCopy(renderer,groundTexture1,NULL,&groundRect1);
-    SDL_Rect groundRect2 = {ground2X,Utils::HEIGHT-40-48, groundImageWidth,40};
+    SDL_Rect groundRect2 = {ground->GetX2(),Utils::HEIGHT-40-48, ground->GetWidth(),40};
     SDL_RenderCopy(renderer,groundTexture2,NULL,&groundRect2);
 
 

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		112AAF6B2B8FA7070058AD2B /* Dino.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 112AAF692B8FA7070058AD2B /* Dino.cpp */; };
 		112AAF712B8FA8A00058AD2B /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 112AAF6F2B8FA8A00058AD2B /* Utils.cpp */; };
+		112AAF772B9143B90058AD2B /* Ground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 112AAF752B9143B90058AD2B /* Ground.cpp */; };
 		114D1A032B7D759300E76412 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 114D1A022B7D759300E76412 /* main.cpp */; };
 		114D1A0B2B7D761800E76412 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114D1A0A2B7D761800E76412 /* SDL2.framework */; };
 		114D1A0D2B7D7EA500E76412 /* SDL2_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 114D1A0C2B7D7EA500E76412 /* SDL2_ttf.framework */; };
@@ -32,6 +33,8 @@
 		112AAF6A2B8FA7070058AD2B /* Dino.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Dino.hpp; sourceTree = "<group>"; };
 		112AAF6F2B8FA8A00058AD2B /* Utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Utils.cpp; sourceTree = "<group>"; };
 		112AAF702B8FA8A00058AD2B /* Utils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Utils.hpp; sourceTree = "<group>"; };
+		112AAF752B9143B90058AD2B /* Ground.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Ground.cpp; sourceTree = "<group>"; };
+		112AAF762B9143B90058AD2B /* Ground.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Ground.hpp; sourceTree = "<group>"; };
 		114D19FF2B7D759300E76412 /* DinoRun */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DinoRun; sourceTree = BUILT_PRODUCTS_DIR; };
 		114D1A022B7D759300E76412 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		114D1A0A2B7D761800E76412 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
@@ -74,6 +77,8 @@
 			isa = PBXGroup;
 			children = (
 				114D1A022B7D759300E76412 /* main.cpp */,
+				112AAF752B9143B90058AD2B /* Ground.cpp */,
+				112AAF762B9143B90058AD2B /* Ground.hpp */,
 				112AAF692B8FA7070058AD2B /* Dino.cpp */,
 				112AAF6A2B8FA7070058AD2B /* Dino.hpp */,
 				112AAF6F2B8FA8A00058AD2B /* Utils.cpp */,
@@ -151,6 +156,7 @@
 			files = (
 				112AAF6B2B8FA7070058AD2B /* Dino.cpp in Sources */,
 				114D1A032B7D759300E76412 /* main.cpp in Sources */,
+				112AAF772B9143B90058AD2B /* Ground.cpp in Sources */,
 				112AAF712B8FA8A00058AD2B /* Utils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
