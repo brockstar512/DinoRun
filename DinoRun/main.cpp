@@ -11,16 +11,16 @@ SDL_Renderer* renderer = NULL;
 SDL_Texture* dinoTexture = NULL;
 SDL_Texture* groundTexture1=NULL;
 SDL_Texture* groundTexture2=NULL;
-//int groundImageWidth = 0;
-//int groundSpeed = 2;
-//int ground1X = 0;
-//int ground2X = 0;
+
+//frame rate
+const unsigned int fps = 60;
+const unsigned int desiredDelta = 1000/fps;
 
 bool quit = false;
 SDL_Event event;
 
-Dino* dino;
-Ground* ground;
+Dino* dino = nullptr;
+Ground* ground = nullptr;
 const char* SPRITES_FOLDER="/Users/marshallbrock/Documents/C++/DinoRun/DinoRun/sprites/";
 bool LoadSprites()
 {
@@ -120,9 +120,14 @@ int main(int argc, char* argv[]) {
     //game loop
     while(!quit)
     {
+        //number returned is time in milliseconds sents sdl init was called
+        int startLoop = SDL_GetTicks();
+        
+        
         //event loop
         while(SDL_PollEvent(&event)!=0)
         {
+
          if(event.type == SDL_QUIT)
          {
              quit = true;
@@ -139,8 +144,13 @@ int main(int argc, char* argv[]) {
         }
         
         Draw();
+        int delta = SDL_GetTicks() - startLoop;
         
-        SDL_Delay(1);
+        if(delta < desiredDelta)
+        {
+            SDL_Delay(desiredDelta - delta);
+        }
+        //SDL_Delay(1);
     }
     delete dino;
     SDL_Quit();
